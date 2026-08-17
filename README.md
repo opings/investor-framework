@@ -27,7 +27,7 @@
 ├── knowledge/
 │   ├── frameworks/          # 流程宪法：研究新公司-分析流程 + 主观分析-workflow
 │   ├── companies/_模板/     # 公司事实编年模板（时间·主体·事件，只记事实）
-│   └── fraud-cases/         # _案例模板 + 造假模式库.md（64 案例反向蒸馏的红旗库）
+│   └── fraud-cases/         # README(库规则) + _案例模板 + 造假模式库.md（64 案例蒸馏红旗）
 ├── finance/_模板/           # 客观层模板：模板说明 / 财报阅读规则 / 分析模板 /
 │                            #   关注要点行业模板 / 财务数据README模板 / 美股缩写对照
 ├── judgments/_模板/         # 主观层模板：估值 / 估值记录 / 能力圈 / 观点变更
@@ -52,9 +52,15 @@
 3. 用 Claude Code 打开，喂第一家公司的财报，`company-analysis` 会按模板生成 `finance/<公司>/`；
 4. 数据层目录（`finance/<公司>`、`judgments/<公司>`、`gurus/<slug>`、`knowledge/companies/` 等）在你自己的库里生长，不回流本库。
 
+## 已知不自包含点
+
+- **`scripts/` 未导出**（主库决定）：每日哨兵（`daily-news` 依赖的 notices.py / daily-news.sh / launchd plist）和财务比率派生（derived.py）在主库工具层，起新库需自备或回主库取；
+- **花名册属数据层，不出库**：`gurus/INDEX.md`、`knowledge/companies/INDEX.md` 与 `_watchlist.md` 是查询/哨兵类 skill 第一步的硬依赖，起新库时按各自结构规范自建空表即可。
+
 ## 同步机制（维护者备忘）
 
 - **白名单**：主库 `scripts/rules-manifest.txt` —— 唯一权威，白名单制保证数据层永不误发；
 - **导出**：主库 `scripts/export-rules.sh` —— 全量镜像受管路径 → commit（带主库 hash）→ push；
 - **提醒**：主库 post-commit hook（`scripts/git-hooks/post-commit`）检测到规则变更即提示同步；
-- 本库自有文件（`README.md` / `LICENSE` / `.gitignore`）不在白名单内，导出永不覆盖。
+- 本库自有文件（`README.md` / `LICENSE` / `.gitignore`）不在白名单内，导出永不覆盖；
+  **除这三个名字之外的任何顶层新增文件都会在下次导出时被清掉**——真要加自有文件，先把文件名加进主库 `export-rules.sh` 的 `KEEP`。
